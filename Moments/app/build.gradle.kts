@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("com.google.devtools.ksp") version "2.0.0-1.0.23"
 }
 
 android {
@@ -40,6 +41,21 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.navigation.common.android)
+    implementation(libs.androidx.navigation.runtime.android)
+    val roomVersion = "2.6.1"
+
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+
+    // Use KSP for annotation processing
+    ksp("androidx.room:room-compiler:$roomVersion")
+
+    // Optional: Paging support
+    implementation(libs.androidx.room.paging)
+
+    // Optional: Test support
+    testImplementation(libs.androidx.room.testing)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -56,4 +72,8 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    implementation(libs.koin.androidx.compose)
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.compose)
 }
