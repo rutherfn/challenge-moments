@@ -1,3 +1,24 @@
 <resources>
     <string name="app_name">Moments</string>
+    <string name="are_you_sure_you_want_to_delete_this_moment">Are you sure you want to delete this moment?</string>
+    <string name="are_you_sure_you_want_to_create_this_moment">Are you sure you want to create this moment?</string>
+    <string name="are_you_sure_you_want_to_edit_this_moment">Are you sure you want to edit this moment?</string>"
+    <string name="create_moment">Create Moment</string>
+    <string name="creating_moment">Creating Moment</string>
+    <string name="edit_moment">Edit Moment</string>
+    <string name="editing_moment">Editing Moment</string>
+    <string name="delete_moment">Delete Moment</string>
+    <string name="deleting_moment">Deleting Moment</string>
+    <string name="moment_title">Moment Title</string>
+    <string name="no">No</string>
+    <string name="no_title_entered_alert_confirm_button">OK</string>
+    <string name="no_title_entered_alert_description">Please enter a title for your moment.</string>
+    <string name="no_title_entered_alert_title">No Title Entered</string>
+    <string name="no_category_selected_alert_confirm_button">OK</string>
+    <string name="no_category_selected_alert_description">Please select a category for your moment.</string>
+    <string name="no_category_selected_alert_title">No Category Selected</string>
+    <string name="no_moments_yet">No moments yet</string>
+    <string name="select_category">Select Category</string>
+    <string name="tap_to_create_first_moment">Tap the + button to create your first moment.</string>
+    <string name="yes">Yes</string>
 </resources>

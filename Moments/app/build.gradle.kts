@@ -36,6 +36,7 @@ android {
         jvmTarget = "11"
     }
     buildFeatures {
+        buildConfig = true
         compose = true
     }
 }
@@ -43,18 +44,19 @@ android {
 dependencies {
     implementation(libs.androidx.navigation.common.android)
     implementation(libs.androidx.navigation.runtime.android)
-    val roomVersion = "2.6.1"
+    implementation(libs.androidx.navigation.compose.android)
 
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
 
-    // Use KSP for annotation processing
-    ksp("androidx.room:room-compiler:$roomVersion")
+    implementation(libs.timber)
 
-    // Optional: Paging support
+    implementation(libs.koin.androidx.navigation)
+
+    ksp(libs.androidx.room.compiler)
+
     implementation(libs.androidx.room.paging)
 
-    // Optional: Test support
     testImplementation(libs.androidx.room.testing)
 
     implementation(libs.androidx.core.ktx)
