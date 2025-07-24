@@ -15,6 +15,7 @@ navigationCommonAndroid = "2.9.0"
 navigationRuntimeAndroid = "2.9.0"
 navigationComposeAndroid = "2.9.0"
 timber = "5.0.1"
+uiText = "1.8.3"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -46,6 +47,7 @@ androidx-navigation-common-android = { group = "androidx.navigation", name = "na
 androidx-navigation-runtime-android = { group = "androidx.navigation", name = "navigation-runtime-android", version.ref = "navigationRuntimeAndroid" }
 androidx-navigation-compose-android = { group = "androidx.navigation", name = "navigation-compose-android", version.ref = "navigationComposeAndroid" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
+androidx-ui-text = { group = "androidx.compose.ui", name = "ui-text", version.ref = "uiText" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

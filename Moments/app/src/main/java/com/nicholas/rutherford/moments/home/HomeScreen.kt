@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,6 +30,7 @@ import com.nicholas.rutherford.moments.composeext.CircleWithText
 import com.nicholas.rutherford.moments.data.CategoryTag
 import com.nicholas.rutherford.moments.firstTwoChars
 import com.nicholas.rutherford.moments.room.MomentEntity
+import com.nicholas.rutherford.moments.testtags.HomeScreenTestTags
 import com.nicholas.rutherford.moments.ui.theme.MomentsTheme
 
 /**
@@ -71,6 +73,7 @@ fun HomeScreenEmptyState() {
         Text(
             text = stringResource(R.string.no_moments_yet),
             style = MaterialTheme.typography.headlineSmall,
+            modifier = Modifier.testTag(tag = HomeScreenTestTags.NO_MOMENTS_YET_TITLE),
             color = MaterialTheme.colorScheme.onBackground
         )
 
@@ -79,6 +82,7 @@ fun HomeScreenEmptyState() {
         Text(
             text = stringResource(R.string.tap_to_create_first_moment),
             style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.testTag(tag = HomeScreenTestTags.TAP_TO_ADD_MOMENTS_DESCRIPTION),
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
             textAlign = TextAlign.Center
         )

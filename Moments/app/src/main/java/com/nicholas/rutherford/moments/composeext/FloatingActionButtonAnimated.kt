@@ -14,8 +14,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.nicholas.rutherford.moments.testtags.FloatingActionButtonTestTags
 import com.nicholas.rutherford.moments.ui.theme.Blue40
 
 /**
@@ -27,12 +29,14 @@ import com.nicholas.rutherford.moments.ui.theme.Blue40
  *        the button will scale down, and when false, it returns to its normal size.
  * @param onClick A lambda function to handle the button click event.
  * @param onAnimationEnd A lambda function that gets triggered when the scale animation finishes.
+ * @param testTag An optional test tag for the FloatingActionButton.
  */
 @Composable
 fun FloatingActionButtonAnimated(
     isPressed: Boolean,
     onClick: () -> Unit,
-    onAnimationEnd: () -> Unit
+    onAnimationEnd: () -> Unit,
+    testTag: String? = null
 ) {
     val scale by animateFloatAsState(
         targetValue = if (isPressed) 0.95f else 1f,
@@ -47,6 +51,7 @@ fun FloatingActionButtonAnimated(
     FloatingActionButton(
         onClick = onClick,
         modifier = Modifier
+            .testTag(tag = FloatingActionButtonTestTags.FLOATING_ACTION_BUTTON)
             .graphicsLayer {
                 scaleX = scale
                 scaleY = scale

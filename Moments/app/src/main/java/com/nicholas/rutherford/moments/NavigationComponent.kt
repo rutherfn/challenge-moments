@@ -19,6 +19,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -32,6 +33,7 @@ import com.nicholas.rutherford.moments.navigation.NavigationActions
 import com.nicholas.rutherford.moments.navigation.NavigationDestinations
 import com.nicholas.rutherford.moments.navigation.Navigator
 import com.nicholas.rutherford.moments.navigation.asLifecycleAwareState
+import com.nicholas.rutherford.moments.testtags.TopAppBarTestTags
 import com.nicholas.rutherford.moments.ui.theme.Blue40
 import com.nicholas.rutherford.moments.ui.theme.OffWhite
 
@@ -129,12 +131,16 @@ fun NavigationComponent(
                 title = {
                     Text(
                         text = application.getStringResource(stringId = Constants.StringIds.APP_NAME),
+                        modifier = Modifier.testTag(tag = TopAppBarTestTags.TOP_APP_BAR_TITLE),
                         color = OffWhite
                     )
                 },
                 navigationIcon = {
                     if (showNavigationIcon) {
-                    IconButton(onClick = { navigator.pop(NavigationDestinations.HOME_SCREEN) }) {
+                    IconButton(
+                        modifier = Modifier.testTag(tag = TopAppBarTestTags.TOP_APP_BAR_BACK_ICON_BUTTON),
+                        onClick = { navigator.pop(NavigationDestinations.HOME_SCREEN) })
+                    {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back",
@@ -151,7 +157,7 @@ fun NavigationComponent(
                 )
             )
         }
-    ){ paddingValues ->
+    ) { paddingValues ->
         NavHost(
             navController = navHostController,
             modifier = Modifier

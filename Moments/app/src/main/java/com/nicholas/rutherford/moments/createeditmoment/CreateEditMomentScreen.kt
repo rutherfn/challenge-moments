@@ -7,6 +7,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
@@ -24,12 +27,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.nicholas.rutherford.moments.R
 import com.nicholas.rutherford.moments.data.CategoryTag
 import com.nicholas.rutherford.moments.data.CategoryTag.Other.all
+import com.nicholas.rutherford.moments.testtags.CreateEditMomentScreenTestTags
 
 /**
  * Composable that displays the create or edit moment screen.
@@ -92,6 +99,7 @@ fun CreateEditMomentContent(
 ) {
     val focusRequester = remember { FocusRequester() }
     var expanded by remember { mutableStateOf(false) }
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     Column(
         modifier = Modifier
@@ -106,25 +114,37 @@ fun CreateEditMomentContent(
             } else {
                 stringResource(id = R.string.create_moment)
             },
+            modifier = Modifier.testTag(tag = CreateEditMomentScreenTestTags.CREATE_EDIT_MOMENT_TITLE),
             style = MaterialTheme.typography.headlineMedium,
         )
 
         OutlinedTextField(
             value = state.title,
             onValueChange = { title -> onTitleValueChanged.invoke(title) },
-            label = { Text(text = stringResource(id = R.string.moment_title)) },
-            modifier = Modifier.fillMaxWidth().focusRequester(focusRequester)
+            label = { Text(text = stringResource(id = R.string.moment_title), modifier = Modifier.testTag(tag = CreateEditMomentScreenTestTags.MOMENT_TEXT_FIELD_TITLE)) },
+            modifier = Modifier.fillMaxWidth().focusRequester(focusRequester).testTag(tag = CreateEditMomentScreenTestTags.MOMENT_TEXT_FIELD),
+            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(onDone = { keyboardController?.hide() }),
         )
 
-        Box(modifier = Modifier.fillMaxWidth()) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentSize(Alignment.TopStart)
+        ) {
             OutlinedButton(
                 onClick = {
-                    focusRequester.freeFocus()
+                    //focusRequester.freeFocus()
                     expanded = true
+
+                    println("get here testtest $expanded")
                           },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth().testTag(tag = CreateEditMomentScreenTestTags.CATEGORY_TAG_BUTTON)
             ) {
-                Text(text = state.categoryTag?.title ?: stringResource(R.string.select_category))
+                Text(
+                    text = state.categoryTag?.title ?: stringResource(R.string.select_category),
+                    modifier = Modifier.testTag(tag = CreateEditMomentScreenTestTags.CATEGORY_TAG_BUTTON_TEXT)
+                )
             }
 
             DropdownMenu(
@@ -132,12 +152,18 @@ fun CreateEditMomentContent(
                 onDismissRequest = { expanded = false },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                CategoryTag.all.forEach { category ->
+                listOf(1,2,3).forEachIndexed { index, category ->
                     DropdownMenuItem(
-                        text = { Text(text = category.title) },
+                        enabled = true,
+                        text = {
+                            Text(
+                                text = index.toString(),
+                                modifier = Modifier.testTag(tag = CreateEditMomentScreenTestTags.dropDownMenuItem(index = index))
+                            )
+                               },
                         onClick = {
-                            focusRequester.freeFocus()
-                            onCategorySelected.invoke(category)
+                            //focusRequester.freeFocus()
+                           // onCategorySelected.invoke(category)
                             expanded = false
                         }
                     )
