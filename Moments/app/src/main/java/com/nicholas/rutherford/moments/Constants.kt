@@ -154,7 +154,7 @@ object Constants {
     object NavigationArguments {
 
         /**
-         * List of [NavArgument] definitions for the "Create/Edit Moment" screen.
+         * List of NavArgument definitions for the "Create/Edit Moment" screen.
          * This list specifies the parameters that need to be passed when navigating to this screen.
          *
          * Arguments:

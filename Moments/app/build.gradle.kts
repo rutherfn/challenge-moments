@@ -16,7 +16,7 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.nicholas.rutherford.moments.KoinTestRunner"
     }
 
     buildTypes {
@@ -52,12 +52,14 @@ dependencies {
     implementation(libs.timber)
 
     implementation(libs.koin.androidx.navigation)
+    implementation(libs.androidx.ui.text)
 
     ksp(libs.androidx.room.compiler)
 
     implementation(libs.androidx.room.paging)
 
     testImplementation(libs.androidx.room.testing)
+    androidTestImplementation(libs.koin.test.junit4) // Added Koin test dependency
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

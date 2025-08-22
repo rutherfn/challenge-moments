@@ -82,7 +82,7 @@ class MomentRepositoryImpl(private val momentDao: MomentDao) : MomentRepository 
      * @param tag The [CategoryTag] to filter moments by category.
      * @return A list of [MomentEntity] that belong to the given category.
      *
-     * This method calls [MomentDao]'s [getMomentByCategory] function, passing the [CategoryTag]'s
+     * This method calls [MomentDao]'s getMomentByCategory function, passing the [CategoryTag]'s
      * `typeIdentifier` to fetch moments of that specific category.
      */
     override suspend fun getMomentsByCategory(tag: CategoryTag): List<MomentEntity> {
@@ -102,8 +102,8 @@ class MomentRepositoryImpl(private val momentDao: MomentDao) : MomentRepository 
      *
      * @param title The title of the moment to be deleted.
      *
-     * This method first fetches the moment with the provided title using [getMomentByTitle]. If the
-     * moment exists, it is deleted from the database using the [delete] function in [MomentDao].
+     * This method first fetches the moment with the provided title using getMomentByTitle. If the
+     * moment exists, it is deleted from the database using the delete function in [MomentDao].
      */
     override suspend fun deleteMoment(title: String) {
         Timber.d("Deleting moment with title: $title")

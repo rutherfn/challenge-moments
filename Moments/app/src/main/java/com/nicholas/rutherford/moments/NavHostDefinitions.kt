@@ -1,18 +1,13 @@
-package com.nicholas.rutherford.moments.navigation
+package com.nicholas.rutherford.moments
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.nicholas.rutherford.moments.Constants
-import com.nicholas.rutherford.moments.ObserveLifecycle
 import com.nicholas.rutherford.moments.createeditmoment.CreateEditMomentScreen
 import com.nicholas.rutherford.moments.createeditmoment.CreateEditMomentViewModel
 import com.nicholas.rutherford.moments.home.HomeScreen
 import com.nicholas.rutherford.moments.home.HomeViewModel
-import com.nicholas.rutherford.moments.ui.theme.OffWhite
+import com.nicholas.rutherford.moments.navigation.NavigationDestinations
 import org.koin.androidx.compose.koinViewModel
 
 object NavHostDefinitions {
@@ -37,15 +32,12 @@ object NavHostDefinitions {
             // Observe lifecycle changes for the ViewModel
             ObserveLifecycle(homeViewModel)
 
-            // Display the HomeScreen UI
-            Column(Modifier.background(OffWhite)) {
-                HomeScreen(
-                    notes = homeViewModel.state.collectAsState().value.notes,
-                    onItemClicked = { title, categoryTag ->
-                        homeViewModel.onItemClicked(title = title, categoryTag = categoryTag)
-                    }
-                )
-            }
+            HomeScreen(
+                notes = homeViewModel.state.collectAsState().value.notes,
+                onItemClicked = { title, categoryTag ->
+                    homeViewModel.onItemClicked(title = title, categoryTag = categoryTag)
+                }
+            )
         }
     }
 
@@ -74,22 +66,16 @@ object NavHostDefinitions {
 
             // Extract the arguments passed to this composable
             entry.arguments?.let { arguments ->
-                Column(Modifier.background(OffWhite)) {
-                    CreateEditMomentScreen(
-                        state = createEditMomentViewModel.state.collectAsState().value,
-                        isEditing = !arguments.getString(Constants.NavigationKeys.PARAM_TITLE).isNullOrEmpty(),
-                        onToolbarBackButton = { createEditMomentViewModel.onToolbarBackButton() },
-                        onTitleValueChanged = { title ->
-                            createEditMomentViewModel.onTitleValueChanged(title)
-                        },
-                        onCategorySelected = { categoryTag ->
-                            createEditMomentViewModel.onCategorySelected(categoryTag)
-                        },
-                        onCreateButtonClicked = { createEditMomentViewModel.onCreateButtonClicked() },
-                        onEditButtonClicked = { createEditMomentViewModel.onEditButtonClicked() },
-                        onDeleteButtonClicked = { createEditMomentViewModel.onDeleteButtonClicked() }
+                CreateEditMomentScreen(
+                    state = createEditMomentViewModel.state.collectAsState().value,
+                    isEditing = !arguments.getString(Constants.NavigationKeys.PARAM_TITLE).isNullOrEmpty(),
+                    onToolbarBackButton = { createEditMomentViewModel.onToolbarBackButton() },
+                    onTitleValueChanged = { title -> createEditMomentViewModel.onTitleValueChanged(title) },
+                    onCategorySelected = { categoryTag -> createEditMomentViewModel.onCategorySelected(categoryTag) },
+                    onCreateButtonClicked = { createEditMomentViewModel.onCreateButtonClicked() },
+                    onEditButtonClicked = { createEditMomentViewModel.onEditButtonClicked() },
+                    onDeleteButtonClicked = { createEditMomentViewModel.onDeleteButtonClicked() }
                     )
-                }
             }
         }
     }

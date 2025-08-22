@@ -48,12 +48,11 @@ class CreateEditMomentViewModel(
     internal val titleParam: String = savedStateHandle.get<String>("title") ?: ""
     internal val categoryIdParam: Int = savedStateHandle.get<Int>("categoryId") ?: -1
 
-    init {
-        checkForParams()
-    }
+    init { checkForParams() }
 
     /**
-     * Checks if parameters (title and category) were passed in the navigation and updates the state accordingly.
+     * Checks if parameters (title and category) were passed in the navigation and not set to -1 or empty.
+     * Then we will update the state accordingly.
      */
     internal fun checkForParams() {
         if (titleParam.isNotEmpty() && categoryIdParam != -1) {
@@ -207,6 +206,20 @@ class CreateEditMomentViewModel(
     }
 
     /**
+     * Builds and returns an error if the user does not enter a title or select a category.
+     * It will check first if the title is empty and if its not it will return the no category tag selected alert.
+     *
+     * @return An [Alert] object containing either ][buildNoTitleEnteredAlert] or [buildNoCategorySelectedAlert]
+     */
+    fun buildCreateOrEditMomentErrorAlert(title: String): Alert {
+        return if (title.isEmpty()) {
+            buildNoTitleEnteredAlert()
+        } else {
+            buildNoCategorySelectedAlert()
+        }
+    }
+
+    /**
      * Updates the title when the user changes it in the UI.
      */
     fun onTitleValueChanged(title: String) {
@@ -301,6 +314,34 @@ class CreateEditMomentViewModel(
 
     /**
      * Handles the action when the "Yes" button is clicked, from the alert.
+     * Inserts a new moment or edits an existing one in the repository, depending on the provided action type(where your coming from either edit or create option)
+     *
+     * @param isCreateAction A flag indicating whether the action is creating or editing a moment.
+     *                       If true, it performs a create action, else it performs an edit action.
+     * @param title The title [String] of the moment to be inserted or edited.
+     * @param categoryTag The category tag [CategoryTag] of the moment to be inserted or edited.
+     */
+    suspend fun insertOrEditMoment(isCreateAction: Boolean, title: String, categoryTag: CategoryTag) {
+        if (isCreateAction) {
+            momentRepository.insertMoment(
+                moment = MomentEntity(
+                    title = title,
+                    categoryTag = categoryTag
+                )
+            )
+        } else {
+            momentRepository.editMoment(
+                currentMomentTitle = titleParam,
+                newMoment = MomentEntity(
+                    title = title,
+                    categoryTag = categoryTag
+                )
+            )
+        }
+    }
+
+    /**
+     * Handles the action when the "Yes" button is clicked, from the alert.
      * Inserts a new moment or edits an existing one in the repository, depending on the provided action type.
      *
      * @param isCreateAction A flag indicating whether the action is creating or editing a moment.
@@ -311,34 +352,22 @@ class CreateEditMomentViewModel(
             navigator.enableProgress()
 
             val finalTitle = title.ifEmpty { titleParam }
-            val finalCategoryTag = categoryTag ?: CategoryTag.fromTypeId(id = categoryIdParam)
+            val finalCategoryTag = categoryTag ?: if (categoryIdParam == -1) {
+                null
+            } else {
+                CategoryTag.fromTypeId(id = categoryIdParam)
+            }
 
-            if (finalTitle.isNotEmpty()) {
-                finalCategoryTag?.let { tag ->
-                    if (isCreateAction) {
-                        momentRepository.insertMoment(
-                            moment = MomentEntity(
-                                title = finalTitle,
-                                categoryTag = tag
-                            )
-                        )
-                    } else {
-                        momentRepository.editMoment(
-                            currentMomentTitle = titleParam,
-                            newMoment = MomentEntity(
-                                title = finalTitle,
-                                categoryTag = tag
-                            )
-                        )
-                    }
-                    clearStateAndPopStack()
-                } ?: run {
-                    navigator.disableProgress()
-                    navigator.alert(alertAction = buildNoCategorySelectedAlert())
-                }
+            if (finalTitle.isNotEmpty() && finalCategoryTag != null) {
+                insertOrEditMoment(
+                    isCreateAction = isCreateAction,
+                    title = finalTitle,
+                    categoryTag = finalCategoryTag
+                )
+                clearStateAndPopStack()
             } else {
                 navigator.disableProgress()
-                navigator.alert(alertAction = buildNoTitleEnteredAlert())
+                navigator.alert(alertAction = buildCreateOrEditMomentErrorAlert(title = finalTitle))
             }
         }
     }
