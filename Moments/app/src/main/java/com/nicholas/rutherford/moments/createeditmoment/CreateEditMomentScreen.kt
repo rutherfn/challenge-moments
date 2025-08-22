@@ -160,6 +160,7 @@ fun CreateMomentContent(
                         text = {
                             Text(
                                 text = category.title,
+                                color = MaterialTheme.colorScheme.onBackground,
                                 modifier = Modifier.testTag(tag = CreateEditMomentScreenTestTags.dropDownMenuItem(index = index))
                             )
                         },
@@ -281,7 +282,7 @@ fun EditMomentContent(
                 focusRequester.freeFocus()
                 onEditButtonClicked.invoke()
             },
-            enabled = state.editButtonEnabled,
+            enabled = true,
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(text = stringResource(R.string.edit_moment))
