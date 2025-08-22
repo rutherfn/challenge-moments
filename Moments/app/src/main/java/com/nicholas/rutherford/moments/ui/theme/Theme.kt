@@ -8,21 +8,20 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
 // Dark color scheme for the app
 private val DarkColorScheme = darkColorScheme(
-    primary = Blue80,
+    primary = OffWhite,
     secondary = BlueGrey80,
     tertiary = Teal80,
-    background = Color(0xFF121212),
-    surface = Color(0xFF1E1E1E),
-    onPrimary = Color.Black,
-    onSecondary = Color.Black,
-    onTertiary = Color.Black,
-    onBackground = Color.White,
-    onSurface = Color.White
+    background = Black,
+    surface = Black,
+    onPrimary = Black,
+    onSecondary = Black,
+    onTertiary = Black,
+    onBackground = OffWhite,
+    onSurface = OffWhite
 )
 
 // Light color scheme for the app
@@ -32,11 +31,11 @@ private val LightColorScheme = lightColorScheme(
     tertiary = Teal40,
     background = OffWhite,
     surface = OffWhite,
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color.Black,
-    onSurface = Color.Black
+    onPrimary = OffWhite,
+    onSecondary = OffWhite,
+    onTertiary = OffWhite,
+    onBackground = Black,
+    onSurface = OffWhite
 )
 
 /**
@@ -49,7 +48,7 @@ private val LightColorScheme = lightColorScheme(
 @Composable
 fun MomentsTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {

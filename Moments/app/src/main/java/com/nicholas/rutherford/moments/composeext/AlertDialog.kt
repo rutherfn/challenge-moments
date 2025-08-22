@@ -52,8 +52,8 @@ fun AlertDialog(
                 )
             }
         },
-        title = { Text(text = title) },
-        text = { description?.let { text -> Text(text = text) } },
+        title = { Text(text = title, color = MaterialTheme.colorScheme.onBackground) },
+        text = { description?.let { text -> Text(text = text, color = MaterialTheme.colorScheme.onBackground) } },
         modifier = Modifier.padding(32.dp),
         shape = RoundedCornerShape(25.dp)
     )

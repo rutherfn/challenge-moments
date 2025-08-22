@@ -19,10 +19,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.nicholas.rutherford.moments.R
@@ -32,6 +30,7 @@ import com.nicholas.rutherford.moments.firstTwoChars
 import com.nicholas.rutherford.moments.room.MomentEntity
 import com.nicholas.rutherford.moments.testtags.HomeScreenTestTags
 import com.nicholas.rutherford.moments.ui.theme.MomentsTheme
+import com.nicholas.rutherford.moments.ui.theme.OffWhite
 
 /**
  * Composable that displays the home screen, showing a list of moments or an empty state
@@ -69,7 +68,6 @@ fun HomeScreenEmptyState() {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
         Text(
             text = stringResource(R.string.no_moments_yet),
             style = MaterialTheme.typography.headlineSmall,
@@ -83,8 +81,7 @@ fun HomeScreenEmptyState() {
             text = stringResource(R.string.tap_to_create_first_moment),
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.testTag(tag = HomeScreenTestTags.TAP_TO_ADD_MOMENTS_DESCRIPTION),
-            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
-            textAlign = TextAlign.Center
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
         )
     }
 }
@@ -115,7 +112,7 @@ fun HomeScreenList(
                     .padding(horizontal = 16.dp, vertical = 8.dp)
                     .clickable { onItemClicked.invoke(note.title, note.categoryTag.typeIdentifier) },
                 shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
+                colors = CardDefaults.cardColors(containerColor = OffWhite),
                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
             ) {
                 Row(
@@ -124,7 +121,7 @@ fun HomeScreenList(
                         .padding(16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    CircleWithText(note.categoryTag.title.firstTwoChars())
+                    CircleWithText(text = note.categoryTag.title.firstTwoChars())
 
                     Spacer(modifier = Modifier.width(16.dp))
 

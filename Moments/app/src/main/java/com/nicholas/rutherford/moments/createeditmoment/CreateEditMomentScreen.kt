@@ -17,6 +17,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -37,6 +38,7 @@ import com.nicholas.rutherford.moments.R
 import com.nicholas.rutherford.moments.data.CategoryTag
 import com.nicholas.rutherford.moments.data.CategoryTag.Other.all
 import com.nicholas.rutherford.moments.testtags.CreateEditMomentScreenTestTags
+import com.nicholas.rutherford.moments.ui.theme.MomentsTheme
 
 /**
  * Composable that displays the create or edit moment screen.
@@ -64,36 +66,142 @@ fun CreateEditMomentScreen(
     onDeleteButtonClicked: () -> Unit
 ) {
     BackHandler { onToolbarBackButton.invoke() }
-    CreateEditMomentContent(
-        state = state,
-        isEditing = isEditing,
-        onTitleValueChanged = onTitleValueChanged,
-        onCategorySelected = onCategorySelected,
-        onCreateButtonClicked = onCreateButtonClicked,
-        onEditButtonClicked = onEditButtonClicked,
-        onDeleteButtonClicked = onDeleteButtonClicked
-    )
+    MomentsTheme {
+        if (isEditing) {
+            EditMomentContent(
+                state = state,
+                onTitleValueChanged = onTitleValueChanged,
+                onCategorySelected = onCategorySelected,
+                onEditButtonClicked = onEditButtonClicked,
+                onDeleteButtonClicked = onDeleteButtonClicked
+            )
+        } else {
+            CreateMomentContent(
+                state = state,
+                onTitleValueChanged = onTitleValueChanged,
+                onCategorySelected = onCategorySelected,
+                onCreateButtonClicked = onCreateButtonClicked
+            )
+        }
+    }
 }
 
 /**
- * Composable that displays the form content for creating or editing a moment.
- * It includes the title input, category selection dropdown, and buttons for creating, editing, or deleting the moment.
+ * Composable that displays the form content for creating a moment.
+ * It includes the title input, category selection dropdown, and buttons for creating he moment.
  *
  * @param state The state holding the current title and category data.
- * @param isEditing Boolean indicating if the screen is in edit mode.
  * @param onTitleValueChanged Callback invoked when the title text is changed.
  * @param onCategorySelected Callback invoked when a category is selected.
  * @param onCreateButtonClicked Callback invoked when the "Create" button is clicked.
+ */
+@Composable
+fun CreateMomentContent(
+    state: CreateEditMomentState,
+    onTitleValueChanged: (String) -> Unit,
+    onCategorySelected: (CategoryTag) -> Unit,
+    onCreateButtonClicked: () -> Unit
+) {
+    val focusRequester = remember { FocusRequester() }
+    var expanded by remember { mutableStateOf(false) }
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = stringResource(id = R.string.create_moment),
+            modifier = Modifier.testTag(tag = CreateEditMomentScreenTestTags.CREATE_MOMENT_TITLE),
+            style = MaterialTheme.typography.headlineMedium
+        )
+
+        OutlinedTextField(
+            value = state.title,
+            onValueChange = { title -> onTitleValueChanged.invoke(title) },
+            label = { Text(text = stringResource(id = R.string.moment_title), modifier = Modifier.testTag(tag = CreateEditMomentScreenTestTags.MOMENT_TEXT_FIELD_TITLE)) },
+            modifier = Modifier.fillMaxWidth().focusRequester(focusRequester).testTag(tag = CreateEditMomentScreenTestTags.MOMENT_TEXT_FIELD),
+            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(onDone = { keyboardController?.hide() }),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
+                focusedContainerColor = MaterialTheme.colorScheme.background,
+                unfocusedContainerColor = MaterialTheme.colorScheme.background,
+            )
+        )
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentSize(Alignment.TopStart)
+        ) {
+            OutlinedButton(
+                onClick = { expanded = true },
+                modifier = Modifier.fillMaxWidth().testTag(tag = CreateEditMomentScreenTestTags.CATEGORY_TAG_BUTTON)
+            ) {
+                Text(
+                    text = state.categoryTag?.title ?: stringResource(R.string.select_category),
+                    modifier = Modifier.testTag(tag = CreateEditMomentScreenTestTags.CATEGORY_TAG_BUTTON_TEXT)
+                )
+            }
+
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                CategoryTag.all.forEachIndexed { index, category ->
+                    DropdownMenuItem(
+                        enabled = true,
+                        text = {
+                            Text(
+                                text = category.title,
+                                modifier = Modifier.testTag(tag = CreateEditMomentScreenTestTags.dropDownMenuItem(index = index))
+                            )
+                        },
+                        onClick = {
+                            onCategorySelected.invoke(category)
+                            expanded = false
+                        }
+                    )
+                }
+            }
+        }
+
+        Button(
+            onClick = {
+                focusRequester.freeFocus()
+                onCreateButtonClicked.invoke()
+            },
+            enabled = true,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = stringResource(R.string.create_moment)
+            )
+        }
+    }
+}
+
+/**
+ * Composable that displays the form content for editing a moment.
+ * It includes the title input, category selection dropdown, and buttons for editing or deleting the moment.
+ *
+ * @param state The state holding the current title and category data.
+ * @param onTitleValueChanged Callback invoked when the title text is changed.
+ * @param onCategorySelected Callback invoked when a category is selected.
  * @param onEditButtonClicked Callback invoked when the "Edit" button is clicked.
  * @param onDeleteButtonClicked Callback invoked when the "Delete" button is clicked.
  */
 @Composable
-fun CreateEditMomentContent(
+fun EditMomentContent(
     state: CreateEditMomentState,
-    isEditing: Boolean,
     onTitleValueChanged: (String) -> Unit,
     onCategorySelected: (CategoryTag) -> Unit,
-    onCreateButtonClicked: () -> Unit,
     onEditButtonClicked: () -> Unit,
     onDeleteButtonClicked: () -> Unit
 ) {
@@ -109,13 +217,9 @@ fun CreateEditMomentContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = if (isEditing) {
-                stringResource(id = R.string.edit_moment)
-            } else {
-                stringResource(id = R.string.create_moment)
-            },
-            modifier = Modifier.testTag(tag = CreateEditMomentScreenTestTags.CREATE_EDIT_MOMENT_TITLE),
-            style = MaterialTheme.typography.headlineMedium,
+            text = stringResource(id = R.string.edit_moment),
+            modifier = Modifier.testTag(tag = CreateEditMomentScreenTestTags.EDIT_MOMENT_TITLE),
+            style = MaterialTheme.typography.headlineMedium
         )
 
         OutlinedTextField(
@@ -125,6 +229,12 @@ fun CreateEditMomentContent(
             modifier = Modifier.fillMaxWidth().focusRequester(focusRequester).testTag(tag = CreateEditMomentScreenTestTags.MOMENT_TEXT_FIELD),
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
             keyboardActions = KeyboardActions(onDone = { keyboardController?.hide() }),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
+                focusedContainerColor = MaterialTheme.colorScheme.background,
+                unfocusedContainerColor = MaterialTheme.colorScheme.background,
+            )
         )
 
         Box(
@@ -133,12 +243,7 @@ fun CreateEditMomentContent(
                 .wrapContentSize(Alignment.TopStart)
         ) {
             OutlinedButton(
-                onClick = {
-                    //focusRequester.freeFocus()
-                    expanded = true
-
-                    println("get here testtest $expanded")
-                          },
+                onClick = { expanded = true },
                 modifier = Modifier.fillMaxWidth().testTag(tag = CreateEditMomentScreenTestTags.CATEGORY_TAG_BUTTON)
             ) {
                 Text(
@@ -152,18 +257,18 @@ fun CreateEditMomentContent(
                 onDismissRequest = { expanded = false },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                listOf(1,2,3).forEachIndexed { index, category ->
+                CategoryTag.all.forEachIndexed { index, category ->
                     DropdownMenuItem(
                         enabled = true,
                         text = {
                             Text(
-                                text = index.toString(),
+                                text = category.title,
+                                color = MaterialTheme.colorScheme.onBackground,
                                 modifier = Modifier.testTag(tag = CreateEditMomentScreenTestTags.dropDownMenuItem(index = index))
                             )
                                },
                         onClick = {
-                            //focusRequester.freeFocus()
-                           // onCategorySelected.invoke(category)
+                            onCategorySelected.invoke(category)
                             expanded = false
                         }
                     )
@@ -174,43 +279,26 @@ fun CreateEditMomentContent(
         Button(
             onClick = {
                 focusRequester.freeFocus()
-                if (isEditing) {
-                    onEditButtonClicked.invoke()
-                } else {
-                    onCreateButtonClicked.invoke()
-                }
+                onEditButtonClicked.invoke()
             },
-            enabled = if (isEditing) {
-                state.editButtonEnabled
-            } else {
-                state.createButtonEnabled
-            },
+            enabled = state.editButtonEnabled,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(
-                text = if (isEditing) {
-                    stringResource(R.string.edit_moment)
-                } else {
-                    stringResource(R.string.create_moment)
-                }
-            )
+            Text(text = stringResource(R.string.edit_moment))
         }
-
-        if (isEditing) {
-            Button(
-                onClick = {
-                    focusRequester.freeFocus()
-                    onDeleteButtonClicked.invoke()
-                          },
-                enabled = true,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.error,
-                    contentColor = MaterialTheme.colorScheme.onError
-                ),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(text = stringResource(R.string.delete_moment))
-            }
+        Button(
+            onClick = {
+                focusRequester.freeFocus()
+                onDeleteButtonClicked.invoke()
+                      },
+            enabled = true,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.error,
+                contentColor = MaterialTheme.colorScheme.onError
+            ),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(text = stringResource(R.string.delete_moment))
         }
     }
 }
@@ -258,26 +346,21 @@ private fun EditMomentPreview() {
 @Preview(name = "Create Moment Content", showBackground = true)
 @Composable
 private fun CreateMomentContentPreview() {
-    CreateEditMomentContent(
+    CreateMomentContent(
         state = getSampleState(),
-        isEditing = false,
         onTitleValueChanged = {},
         onCategorySelected = {},
-        onCreateButtonClicked = {},
-        onEditButtonClicked = {},
-        onDeleteButtonClicked = {}
+        onCreateButtonClicked = {}
     )
 }
 
 @Preview(name = "Edit Moment Content", showBackground = true)
 @Composable
 private fun EditMomentContentPreview() {
-    CreateEditMomentContent(
+    EditMomentContent(
         state = getSampleState(),
-        isEditing = true,
         onTitleValueChanged = {},
         onCategorySelected = {},
-        onCreateButtonClicked = {},
         onEditButtonClicked = {},
         onDeleteButtonClicked = {}
     )

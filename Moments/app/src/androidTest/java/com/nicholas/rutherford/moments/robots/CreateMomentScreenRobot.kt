@@ -13,7 +13,10 @@ import com.nicholas.rutherford.moments.typeText
 class CreateMomentScreenRobot(private val composeTestRule: ComposeTestRule) {
 
     private val createMomentTitleNode: SemanticsNodeInteraction =
-        composeTestRule.onNodeWithTag(testTag = CreateEditMomentScreenTestTags.CREATE_EDIT_MOMENT_TITLE)
+        composeTestRule.onNodeWithTag(testTag = CreateEditMomentScreenTestTags.CREATE_MOMENT_TITLE)
+
+    private val editMomentTitleNode: SemanticsNodeInteraction =
+        composeTestRule.onNodeWithTag(testTag = CreateEditMomentScreenTestTags.EDIT_MOMENT_TITLE)
 
     private val momentTextFieldTitleNode: SemanticsNodeInteraction =
         composeTestRule.onNodeWithTag(testTag = CreateEditMomentScreenTestTags.MOMENT_TEXT_FIELD_TITLE, useUnmergedTree = true)

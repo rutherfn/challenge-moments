@@ -1,6 +1,7 @@
 package com.nicholas.rutherford.moments
 
 import android.app.Application
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -27,13 +28,14 @@ import com.nicholas.rutherford.moments.composeext.AlertDialog
 import com.nicholas.rutherford.moments.composeext.FloatingActionButtonAnimated
 import com.nicholas.rutherford.moments.navigation.Alert
 import com.nicholas.rutherford.moments.navigation.AlertConfirmAndDismissButton
-import com.nicholas.rutherford.moments.navigation.NavHostDefinitions.createEditMomentScreen
-import com.nicholas.rutherford.moments.navigation.NavHostDefinitions.homeScreen
+import com.nicholas.rutherford.moments.NavHostDefinitions.createEditMomentScreen
+import com.nicholas.rutherford.moments.NavHostDefinitions.homeScreen
 import com.nicholas.rutherford.moments.navigation.NavigationActions
 import com.nicholas.rutherford.moments.navigation.NavigationDestinations
 import com.nicholas.rutherford.moments.navigation.Navigator
 import com.nicholas.rutherford.moments.navigation.asLifecycleAwareState
 import com.nicholas.rutherford.moments.testtags.TopAppBarTestTags
+import com.nicholas.rutherford.moments.ui.theme.Black
 import com.nicholas.rutherford.moments.ui.theme.Blue40
 import com.nicholas.rutherford.moments.ui.theme.OffWhite
 
@@ -56,10 +58,10 @@ fun NavigationComponent(
     navHostController: NavHostController,
     navigator: Navigator
 ) {
+
     // State variables
     var alert: Alert? by remember { mutableStateOf(value = null) }
     var isPressed by remember { mutableStateOf(false) }
-    var showSnackbar by remember { mutableStateOf(false) }
     var showFab by remember { mutableStateOf(true) }
     var showNavigationIcon by remember { mutableStateOf(false) }
 
@@ -120,7 +122,6 @@ fun NavigationComponent(
                     },
                     onAnimationEnd = {
                         isPressed = false
-                        showSnackbar = true
                     }
                 )
             }
@@ -132,7 +133,6 @@ fun NavigationComponent(
                     Text(
                         text = application.getStringResource(stringId = Constants.StringIds.APP_NAME),
                         modifier = Modifier.testTag(tag = TopAppBarTestTags.TOP_APP_BAR_TITLE),
-                        color = OffWhite
                     )
                 },
                 navigationIcon = {
@@ -150,7 +150,11 @@ fun NavigationComponent(
                         }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Blue40,
+                    containerColor = if (isSystemInDarkTheme()) {
+                        Black
+                    } else {
+                        Blue40
+                    },
                     titleContentColor = OffWhite,
                     navigationIconContentColor = OffWhite,
                     actionIconContentColor = OffWhite
