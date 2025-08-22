@@ -57,12 +57,6 @@ This project was inspired by a desire to build something personal and calm — a
 
 ---
 
-## 📷 Screenshots
-
-_(Add screenshots of your app here if you'd like)_
-
----
-
 ## 📁 License
 
 This project is open source and available under the MIT License.
